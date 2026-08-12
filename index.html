@@ -425,7 +425,8 @@ function pickScene(el){
   document.getElementById('claimLock').style.display = isClaim?'block':'none';
   document.getElementById('fieldsQA').style.display = isQA?'block':'none';
   document.getElementById('fieldsNormal').style.display = isQA?'none':'block';
-  if(isClaim){ currentPub='inner'; syncPub(); }
+  currentPub = isClaim ? 'inner' : 'sns';
+  syncPub();
 }
 function pickPub(el){
   if(currentScene==='claim') return; // クレームは固定
@@ -764,8 +765,10 @@ function fillDemo(){
   setVal('nDoneNote','新機種に興味を持ってくれた。来週デモの約束。');
   setVal('nNext','来週火曜にデモ機を持ち込む');
   setVal('nShare','この地域、居酒屋の反応がいい気がします');
+  currentPub='sns'; syncPub();
+  switchTab('hasshin');
   closeModal('modalSettings');
-  toast('デモデータを入れました（練習用）','ok');
+  toast('デモデータを入れました（発信タブで投稿文をつくれます）','ok');
 }
 
 /* デモデータをクリア（入力を空に。保存した担当者名は残す） */
