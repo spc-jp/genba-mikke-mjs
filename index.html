@@ -105,6 +105,14 @@
   }
   .copy.done{background:var(--ok); border-color:var(--ok); color:#06301f;}
 
+  .copy-all{
+    width:100%; background:linear-gradient(180deg,var(--gold),var(--gold-d)); color:#20160a;
+    border:none; border-radius:11px; padding:13px; font-size:15px; font-weight:800; cursor:pointer;
+    margin-bottom:12px; box-shadow:0 4px 14px rgba(230,185,58,.16);
+  }
+  .copy-all:active{transform:translateY(1px);}
+  .copy-all.done{background:var(--ok); color:#06301f;}
+
   .toast{
     position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(20px);
     background:#111a2b; border:1px solid var(--line); color:var(--text);
@@ -587,8 +595,11 @@ A. ${aa}
   return {facebook, instagram, x, threads, column};
 }
 
+let lastPosts=null;
 function renderPosts(p, out){
+  lastPosts=p;
   out.innerHTML =
+    '<button class="copy-all" onclick="copyAll()">📋 発信をまとめて全部コピー</button>' +
     card('📘 Facebook', p.facebook) +
     card('📸 Instagram', p.instagram) +
     card('𝕏 X（旧Twitter）', p.x) +
@@ -596,6 +607,23 @@ function renderPosts(p, out){
     card('✍️ コラム', p.column);
   bindCopy();
   scrollToOut();
+}
+function copyAll(){
+  if(!lastPosts) return;
+  const p=lastPosts, sep='\n\n──────────────\n\n';
+  const text=[
+    '■ Facebook\n'+p.facebook,
+    '■ Instagram\n'+p.instagram,
+    '■ X（旧Twitter）\n'+p.x,
+    '■ Threads\n'+p.threads,
+    '■ コラム\n'+p.column
+  ].join(sep);
+  navigator.clipboard.writeText(text).then(()=>{
+    const b=document.querySelector('.copy-all');
+    if(!b) return;
+    b.textContent='まとめてコピーしました ✓'; b.classList.add('done');
+    setTimeout(()=>{ b.textContent='📋 発信をまとめて全部コピー'; b.classList.remove('done'); },1800);
+  });
 }
 function card(title, text){
   return `<div class="out-card"><h4>${title}</h4><pre>${escapeHtml(text)}</pre>`+
